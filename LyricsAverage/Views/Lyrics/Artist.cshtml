@@ -1,0 +1,32 @@
+﻿@model LyricsAverage.Models.AverageLyricsResponse
+
+@{
+    ViewData["Title"] = "View";
+}
+
+<h1>View</h1>
+
+<div>
+    <h4>AverageLyricsResponse</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.SongsAnalysed)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.SongsAnalysed)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.AverageWords)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.AverageWords)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.AverageDistinctWords)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.AverageDistinctWords)
+        </dd>
+    </dl>
+</div>

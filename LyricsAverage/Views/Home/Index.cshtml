@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Enter Name of Artist</h1>
+    <form asp-controller="Lyrics" asp-action="Artist" method="get">
+        <p>
+            Enter Artist's Name: <input type="text" name="ArtistName">
+            <input type="submit" value="Search" required="true" />
+        </p>
+    </form>
+</div>
