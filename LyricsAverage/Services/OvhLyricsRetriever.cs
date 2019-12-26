@@ -14,7 +14,7 @@ namespace LyricsAverage.Services
             _httpClient = httpClient;
         }
 
-        public async Task<string> GetLyrics(string artist, string song)
+        public async Task<SongLyrics> GetLyrics(string artist, string song)
         {
             var uri = $"{artist}/{song}";
             var response = await _httpClient.GetAsync(uri);
@@ -23,7 +23,7 @@ namespace LyricsAverage.Services
             {
                 await using var responseStream = await response.Content.ReadAsStreamAsync();
                 var lyricsResponse = await JsonSerializer.DeserializeAsync<LyricsResponse>(responseStream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                return lyricsResponse.Lyrics;
+                return new SongLyrics(song, lyricsResponse.Lyrics);
             }
 
             return null;

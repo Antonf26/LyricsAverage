@@ -20,18 +20,13 @@ namespace LyricsAverage.Services
 
         public async Task<AverageLyricsResponse> GetSongLyricWordCounts(string artist)
         {
-            var songs = _songRetriever.ArtistSongTitles(artist);
+            var artistSongTitles = _songRetriever.ArtistSongTitles(artist);
 
-            var tasks = new List<Task<string>>();
-
-            foreach (var song in songs)
-            {
-                tasks.Add(_lyricsRetriever.GetLyrics(artist, song));
-            }
+            var tasks = artistSongTitles.SongTitles.Select(song => _lyricsRetriever.GetLyrics(artist, song)).ToList();
 
             var allLyrics = await Task.WhenAll(tasks);
-            var wordCounts = allLyrics.Where(l => !IsNullOrEmpty(l)).Select(l => l.GetWordCount());
-            return new AverageLyricsResponse(wordCounts);
+            var wordCounts = allLyrics.Where(l => l != null).ToList();
+            return new AverageLyricsResponse(wordCounts, artistSongTitles.Artist);
         }
     }
 }

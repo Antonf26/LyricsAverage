@@ -18,10 +18,15 @@ namespace LyricsAverage.Services
             _httpClient = httpClient;
         }
 
-        public IEnumerable<string> ArtistSongTitles(string artistName)
+        public ArtistSongTitles ArtistSongTitles(string artistName)
         {
+            
             var artist = GetArtistId(artistName).Result;
-            return GetSongTitles(artist.Id).Result;
+            return new ArtistSongTitles
+            {
+                Artist = artist.Name,
+                SongTitles = GetSongTitles(artist.Id).Result
+            };
         }
 
          private async Task<Artist> GetArtistId(string artistName)

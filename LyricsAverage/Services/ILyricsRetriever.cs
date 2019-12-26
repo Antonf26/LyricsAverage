@@ -1,10 +1,11 @@
 ﻿using System.Threading.Tasks;
+using LyricsAverage.Models;
 
 namespace LyricsAverage.Services
 {
     public interface ILyricsRetriever
     {
-        public Task<string> GetLyrics(string artist, string song);
+        public Task<SongLyrics> GetLyrics(string artist, string song);
 
     }
 }
