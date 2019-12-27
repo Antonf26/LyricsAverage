@@ -20,5 +20,6 @@ namespace LyricsAverage.Controllers
         {
             return View(await _lyricsCounter.GetSongLyricWordCounts(artistName));
         }
+
     }
 }

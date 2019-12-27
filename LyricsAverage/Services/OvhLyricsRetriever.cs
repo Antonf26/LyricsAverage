@@ -19,14 +19,11 @@ namespace LyricsAverage.Services
             var uri = $"{artist}/{song}";
             var response = await _httpClient.GetAsync(uri);
 
-            if (response.IsSuccessStatusCode)
-            {
-                await using var responseStream = await response.Content.ReadAsStreamAsync();
-                var lyricsResponse = await JsonSerializer.DeserializeAsync<LyricsResponse>(responseStream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                return new SongLyrics(song, lyricsResponse.Lyrics);
-            }
+            if (!response.IsSuccessStatusCode) return null;
+            await using var responseStream = await response.Content.ReadAsStreamAsync();
+            var lyricsResponse = await JsonSerializer.DeserializeAsync<LyricsResponse>(responseStream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return new SongLyrics(song, lyricsResponse.Lyrics);
 
-            return null;
         }
     }
 }

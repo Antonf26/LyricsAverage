@@ -11,6 +11,7 @@ namespace LyricsAverage.Models
         {
             Artist = artist;
             var lyrics = songLyrics.ToList();
+            if (!lyrics.Any()) return;
             SongsAnalysed = lyrics.Count();
             AverageWords = Math.Round(lyrics.Average(wc => wc.WordCount.WordCount), 2);
             AverageDistinctWords = Math.Round(lyrics.Average(wc => wc.WordCount.DistinctWordCount), 2);

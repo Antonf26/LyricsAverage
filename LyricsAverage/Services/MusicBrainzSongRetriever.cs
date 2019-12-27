@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using LyricsAverage.Exceptions;
 using LyricsAverage.Helpers;
 using LyricsAverage.Models;
 
@@ -20,8 +22,12 @@ namespace LyricsAverage.Services
 
         public ArtistSongTitles ArtistSongTitles(string artistName)
         {
-            
             var artist = GetArtistId(artistName).Result;
+            if (artist == null)
+            {
+                throw new ArtistNotFoundException();
+            }
+            
             return new ArtistSongTitles
             {
                 Artist = artist.Name,
@@ -34,14 +40,15 @@ namespace LyricsAverage.Services
              var uri = $"artist/?query=artist:{artistName}";
              var response = await _httpClient.GetAsync(uri);
 
-            if (response.IsSuccessStatusCode)
-            {
-                await using var responseStream = await response.Content.ReadAsStreamAsync();
-                var artistsResponse = await JsonSerializer.DeserializeAsync<ArtistQueryResponse>(responseStream, new JsonSerializerOptions{PropertyNameCaseInsensitive = true});
-                return artistsResponse.Artists.FirstOrDefault();
-            }
+             if (response.IsSuccessStatusCode)
+             {
+                 await using var responseStream = await response.Content.ReadAsStreamAsync();
+                 var artistsResponse = await JsonSerializer.DeserializeAsync<ArtistQueryResponse>(responseStream,
+                     new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
+                 return artistsResponse.Artists.FirstOrDefault();
+             }
 
-            return null;
+             return null;
          }
 
          private async Task<IEnumerable<string>> GetSongTitles(string artistId)

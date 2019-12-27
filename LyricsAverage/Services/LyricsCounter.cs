@@ -28,5 +28,6 @@ namespace LyricsAverage.Services
             var wordCounts = allLyrics.Where(l => l != null).ToList();
             return new AverageLyricsResponse(wordCounts, artistSongTitles.Artist);
         }
+
     }
 }
