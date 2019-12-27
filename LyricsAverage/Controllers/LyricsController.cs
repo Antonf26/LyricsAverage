@@ -13,12 +13,12 @@ namespace LyricsAverage.Controllers
 
         public LyricsController(ILyricsCounter lyricsCounter)
         {
-            _lyricsCounter = lyricsCounter;
+            _lyricsCounter = lyricsCounter ?? throw new ArgumentNullException(nameof(_lyricsCounter));
         }
 
         public async Task<IActionResult> Artist(string artistName)
         {
-            return View(await _lyricsCounter.GetSongLyricWordCounts(artistName));
+            return View(await _lyricsCounter.GetLyricsAverages(artistName));
         }
 
     }

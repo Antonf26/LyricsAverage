@@ -7,19 +7,6 @@ namespace LyricsAverage.Models
 {
     public class AverageLyricsResponse
     {
-        public AverageLyricsResponse(IEnumerable<SongLyrics> songLyrics, string artist)
-        {
-            Artist = artist;
-            var lyrics = songLyrics.ToList();
-            if (!lyrics.Any()) return;
-            SongsAnalysed = lyrics.Count();
-            AverageWords = Math.Round(lyrics.Average(wc => wc.WordCount.WordCount), 2);
-            AverageDistinctWords = Math.Round(lyrics.Average(wc => wc.WordCount.DistinctWordCount), 2);
-            SongWithMostWords = lyrics.Max();
-            SongWithFewestWords = lyrics.Min();
-        }
-
-        
         public string Artist { get; set; }
 
         [DisplayName("Songs Analysed")]

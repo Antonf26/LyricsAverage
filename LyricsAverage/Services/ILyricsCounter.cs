@@ -5,6 +5,6 @@ namespace LyricsAverage.Services
 {
     public interface ILyricsCounter
     {
-        public Task<AverageLyricsResponse> GetSongLyricWordCounts(string artist);
+        public Task<AverageLyricsResponse> GetLyricsAverages(string artist);
     }
 }

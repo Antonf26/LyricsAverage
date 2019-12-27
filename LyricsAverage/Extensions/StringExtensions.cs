@@ -8,13 +8,13 @@ namespace LyricsAverage.Extensions
     {
         public static WordCountDetails GetWordCount(this string input)
         {
-            char[] delimiters = new char[] { ' ', '\r', '\n' };
+            char[] delimiters = { ' ', '\r', '\n' };
 
             var words = input.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
             return new WordCountDetails
             {
                 WordCount = words.Length,
-                DistinctWordCount = words.Distinct().Count()
+                DistinctWordCount = words.Distinct(StringComparer.CurrentCultureIgnoreCase).Count()
             };
         }
     }
