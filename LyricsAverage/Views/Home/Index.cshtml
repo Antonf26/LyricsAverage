@@ -4,10 +4,11 @@
 
 <div class="text-center">
     <h1 class="display-4">Enter Name of Artist</h1>
-    <form asp-controller="Lyrics" asp-action="Artist" method="get">
-        <p>
-            Enter Artist's Name: <input type="text" name="ArtistName" required >
-            <input type="submit" value="Search"/>
-        </p>
-    </form>
+    <div class="form-group">
+        <form asp-controller="Lyrics" asp-action="Artist" method="get">
+                 <input id="artistName" type="text" name="ArtistName" required class="form-control form-control-lg" placeholder="e.g.: Madonna">
+                <input type="submit" value="Search" class="btn btn-primary btn-lg btn-block mt-1" />
+            
+        </form>
+    </div>
 </div>
