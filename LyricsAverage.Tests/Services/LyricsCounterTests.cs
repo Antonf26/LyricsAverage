@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using LyricsAverage.Models;
 using LyricsAverage.Services;
@@ -42,7 +43,7 @@ namespace LyricsAverage.Tests.Services
             var artistName = "Michael Jackson";
             _songRetrieverMock.Setup(sr => sr.ArtistSongTitles(artistName)).Returns(new ArtistSongTitles{SongTitles = new List<string>()});
 
-            _ = await _sut.GetLyricsAverages(artistName);
+            _ = await _sut.GetLyricsAverages(artistName, new CancellationToken());
 
             _songRetrieverMock.Verify(sr => sr.ArtistSongTitles(artistName), Times.Once);
         }
@@ -55,7 +56,7 @@ namespace LyricsAverage.Tests.Services
             var artistSongTitles = new ArtistSongTitles {Artist = artistName, SongTitles = songNames};
             _songRetrieverMock.Setup(sr => sr.ArtistSongTitles(artistName)).Returns(artistSongTitles);
 
-            _ = await _sut.GetLyricsAverages(artistName);
+            _ = await _sut.GetLyricsAverages(artistName, new CancellationToken());
 
             foreach (var song in songNames)
             {
@@ -71,7 +72,7 @@ namespace LyricsAverage.Tests.Services
             var artistSongTitles = new ArtistSongTitles { Artist = fullArtistName, SongTitles = new List<string>()};
             _songRetrieverMock.Setup(sr => sr.ArtistSongTitles(artistName)).Returns(artistSongTitles);
 
-            var response = await _sut.GetLyricsAverages(artistName);
+            var response = await _sut.GetLyricsAverages(artistName, new CancellationToken());
 
             Assert.AreEqual(fullArtistName, response.Artist);
         }
@@ -84,7 +85,7 @@ namespace LyricsAverage.Tests.Services
             var artistSongTitles = new ArtistSongTitles { Artist = fullArtistName, SongTitles = new List<string>() };
             _songRetrieverMock.Setup(sr => sr.ArtistSongTitles(artistName)).Returns(artistSongTitles);
 
-            var response = await _sut.GetLyricsAverages(artistName);
+            var response = await _sut.GetLyricsAverages(artistName, new CancellationToken());
 
             Assert.AreEqual(0, response.SongsAnalysed);
             Assert.AreEqual(0, response.AverageDistinctWords);
@@ -106,7 +107,7 @@ namespace LyricsAverage.Tests.Services
             _lyricsRetrieverMock.Setup(lr => lr.GetLyrics(artistName, "song3"))
                 .Returns(Task.FromResult<SongLyrics>(null));
 
-            var response = await _sut.GetLyricsAverages(artistName);
+            var response = await _sut.GetLyricsAverages(artistName, new CancellationToken());
 
             Assert.AreEqual(2, response.SongsAnalysed, "Should return number of songs analysed where lyrics response not null");
         }
@@ -129,7 +130,7 @@ namespace LyricsAverage.Tests.Services
             _lyricsRetrieverMock.Setup(lr => lr.GetLyrics(artistName, "song2"))
                 .Returns(Task.FromResult(new SongLyrics("song2", song2Lyrics)));
 
-            var response = await _sut.GetLyricsAverages(artistName);
+            var response = await _sut.GetLyricsAverages(artistName, new CancellationToken());
 
             Assert.AreEqual(5, response.AverageWords, "Should return average number of total words per song");
         }
@@ -153,7 +154,7 @@ namespace LyricsAverage.Tests.Services
             _lyricsRetrieverMock.Setup(lr => lr.GetLyrics(artistName, "song2"))
                 .Returns(Task.FromResult(new SongLyrics("song2", song2Lyrics)));
 
-            var response = await _sut.GetLyricsAverages(artistName);
+            var response = await _sut.GetLyricsAverages(artistName, new CancellationToken());
 
             Assert.AreEqual(2.5, response.AverageDistinctWords, "Should return average number of distinct words per song");
         }
@@ -177,7 +178,7 @@ namespace LyricsAverage.Tests.Services
             _lyricsRetrieverMock.Setup(lr => lr.GetLyrics(artistName, "song2"))
                 .Returns(Task.FromResult(new SongLyrics("song2", song2Lyrics)));
 
-            var response = await _sut.GetLyricsAverages(artistName);
+            var response = await _sut.GetLyricsAverages(artistName, new CancellationToken());
 
             Assert.AreEqual("song2", response.SongWithMostWords.Title);
             Assert.AreEqual(6, response.SongWithMostWords.WordCount.WordCount);
@@ -202,7 +203,7 @@ namespace LyricsAverage.Tests.Services
             _lyricsRetrieverMock.Setup(lr => lr.GetLyrics(artistName, "song2"))
                 .Returns(Task.FromResult(new SongLyrics("song2", song2Lyrics)));
 
-            var response = await _sut.GetLyricsAverages(artistName);
+            var response = await _sut.GetLyricsAverages(artistName, new CancellationToken());
 
             Assert.AreEqual("song1", response.SongWithFewestWords.Title);
             Assert.AreEqual(4, response.SongWithFewestWords.WordCount.WordCount);

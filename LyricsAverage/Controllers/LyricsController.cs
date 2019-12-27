@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using LyricsAverage.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,9 @@ namespace LyricsAverage.Controllers
 
         public async Task<IActionResult> Artist(string artistName)
         {
-            return View(await _lyricsCounter.GetLyricsAverages(artistName));
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(TimeSpan.FromSeconds(30));
+            return View(await _lyricsCounter.GetLyricsAverages(artistName, cts.Token));
         }
 
     }

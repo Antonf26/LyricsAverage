@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using LyricsAverage.Models;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LyricsAverage.Services
@@ -9,7 +10,7 @@ namespace LyricsAverage.Services
     public class LyricsCounter : ILyricsCounter
     {
         private readonly ISongRetriever _songRetriever;
-        private  readonly ILyricsRetriever _lyricsRetriever;
+        private readonly ILyricsRetriever _lyricsRetriever;
 
         public LyricsCounter(ISongRetriever songRetriever, ILyricsRetriever lyricsRetriever)
         {
@@ -17,15 +18,25 @@ namespace LyricsAverage.Services
             _lyricsRetriever = lyricsRetriever ?? throw  new ArgumentNullException(nameof(lyricsRetriever));
         }
 
-        public async Task<AverageLyricsResponse> GetLyricsAverages(string artist)
+        public async Task<AverageLyricsResponse> GetLyricsAverages(string artist, CancellationToken ct)
         {
             var artistSongTitles = _songRetriever.ArtistSongTitles(artist);
 
             var tasks = artistSongTitles.SongTitles.Select(song => _lyricsRetriever.GetLyrics(artist, song)).ToList();
-
-            var allLyrics = await Task.WhenAll(tasks);
-            return BuildResponse(allLyrics, artistSongTitles.Artist);
+            List<SongLyrics> lyricsRetrieved = new List<SongLyrics>();
+            while (tasks.Any() && !ct.IsCancellationRequested)
+            {
+                var finishedTask = await Task.WhenAny(tasks);
+                tasks.Remove(finishedTask);
+                if (!finishedTask.IsFaulted)
+                {
+                    lyricsRetrieved.Add(await finishedTask);
+                }
+            }
+            return BuildResponse(lyricsRetrieved, artistSongTitles.Artist);
         }
+
+
 
         private AverageLyricsResponse BuildResponse(IEnumerable<SongLyrics> songLyrics, string artistName)
         {

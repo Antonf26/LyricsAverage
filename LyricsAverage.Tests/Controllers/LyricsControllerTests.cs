@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using LyricsAverage.Controllers;
 using LyricsAverage.Models;
@@ -35,7 +36,7 @@ namespace LyricsAverage.Tests.Controllers
         {
             var artistName = "Madonna";
             _ = await _sut.Artist(artistName);
-            _lyricsCounterMock.Verify(lc => lc.GetLyricsAverages(artistName), Times.Once);
+            _lyricsCounterMock.Verify(lc => lc.GetLyricsAverages(artistName, It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]
@@ -43,7 +44,7 @@ namespace LyricsAverage.Tests.Controllers
         {
             var artistName = "Madonna";
             var response = new AverageLyricsResponse();
-            _lyricsCounterMock.Setup(lc => lc.GetLyricsAverages(artistName))
+            _lyricsCounterMock.Setup(lc => lc.GetLyricsAverages(artistName, It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(response));
             var result = await _sut.Artist(artistName) as ViewResult;
             Assert.NotNull(result);
